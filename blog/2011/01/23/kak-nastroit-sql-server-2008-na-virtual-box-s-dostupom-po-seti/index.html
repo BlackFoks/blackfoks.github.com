@@ -1,0 +1,313 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Как настроить SQL Server 2008 на Virtual Box с доступом по сети - blackfoks</title>
+  <meta name="author" content="George Bragin (blackfoks)">
+
+  
+  <meta name="description" content="Решил перенести все инстансы SQL Server&#8217;а на виртуалку, т.к. из-за них довольно
+сильно увеличивается время загрузки рабочего компа. В качестве &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://BlackFoks.github.com/blog/2011/01/23/kak-nastroit-sql-server-2008-na-virtual-box-s-dostupom-po-seti/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="blackfoks" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">blackfoks</a></h1>
+  
+    <h2>notes of developer</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:BlackFoks.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Как настроить SQL Server 2008 на Virtual Box с доступом по сети</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-01-23T16:25:00+06:00" pubdate data-updated="true">Jan 23<span>rd</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Решил перенести все инстансы SQL Server&#8217;а на виртуалку, т.к. из-за них довольно
+сильно увеличивается время загрузки рабочего компа. В качестве ОС для виртуалки
+решил использовать XP, т.к. жрет мало места и оперативки. Поставил XP SP3, после
+чего установил SQL Server 2008 Developer. Вместе с ним еще установились .NET 3.5
+SP1 и обновление на Windows Installer. Во время установки сервака вылетела
+ошибка, что типа не смогли переписать файл, защищаемый виндой, что-то типа
+msxml6.dll или как-то так.</p>
+
+<p>Далее запускаю Management Studio, все работает отлично.</p>
+
+<h2>Настройка сети</h2>
+
+<p>Теперь надо настроить сеть между хостом (Win7) и гостевой осью. В настройках
+адаптеров сети гостевой операционки я выбрал <em>Сетевой мост</em> и в качестве
+физического адаптера ту сетевую карту, которая у меня подключена к домашней
+сети. Это позволит обращаться к базе с любого компа в домашней сети + иметь
+доступ в интернет. Вот скрин настроек:</p>
+
+<p><img src="http://s3.amazonaws.com/blackblog/pictures/1/original/guest-net-settings.png" title="Скрин настроек" ></p>
+
+<p>Когда вы выставите такие настройки в свойствах машины и запустите ее, то ХР
+после загрузки подключится в домашнюю сеть и получит адрес от DHCP роутера.
+Теперь, если попробовать пингануть хост из гостевой ОС, то все пройдет
+нормально:</p>
+
+<div><script src='https://gist.github.com/791365.js?file='></script>
+<noscript><pre><code>C:\Documents and Settings\Admin&gt;ping 192.168.1.3
+
+Обмен пакетами с 192.168.1.3 по 32 байт:
+
+Ответ от 192.168.1.3: число байт=32 время&lt;1мс TTL=128
+Ответ от 192.168.1.3: число байт=32 время&lt;1мс TTL=128
+Ответ от 192.168.1.3: число байт=32 время&lt;1мс TTL=128
+Ответ от 192.168.1.3: число байт=32 время&lt;1мс TTL=128
+
+Статистика Ping для 192.168.1.3:
+    Пакетов: отправлено = 4, получено = 4, потеряно = 0 (0% потерь),
+Приблизительное время приема-передачи в мс:
+    Минимальное = 0мсек, Максимальное = 0 мсек, Среднее = 0 мсек</code></pre></noscript></div>
+
+
+<p>Но вот с хоста мы не можем пингануть гостевую ОС, пакеты не доходят:</p>
+
+<div><script src='https://gist.github.com/791824.js?file='></script>
+<noscript><pre><code>PS C:\Users\BlackFoks&gt; ping 192.168.1.5
+
+Pinging 192.168.1.5 with 32 bytes of data:
+Request timed out.
+Request timed out.
+Request timed out.
+Request timed out.
+
+Ping statistics for 192.168.1.5:
+    Packets: Sent = 4, Received = 0, Lost = 4 (100% loss),</code></pre></noscript></div>
+
+
+<p>Думаем, в чем проблема и вспоминаем, что в ХР мы не отключили <strong>файервол</strong> и он
+блочит пакеты. В гостевой ОС идем в <em>Панель управления → Сетевые подключения</em>,
+там заходим в свойства сетевого адаптера и отключаем фаейрвол. Теперь еще раз
+пингуем гостевую ось с хоста и видим, что все хорошо работает:</p>
+
+<div><script src='https://gist.github.com/791825.js?file='></script>
+<noscript><pre><code>PS C:\Users\BlackFoks&gt; ping 192.168.1.5
+
+Pinging 192.168.1.5 with 32 bytes of data:
+Reply from 192.168.1.5: bytes=32 time&lt;1ms TTL=128
+Reply from 192.168.1.5: bytes=32 time&lt;1ms TTL=128
+Reply from 192.168.1.5: bytes=32 time&lt;1ms TTL=128
+Reply from 192.168.1.5: bytes=32 time&lt;1ms TTL=128
+
+Ping statistics for 192.168.1.5:
+    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 0ms, Maximum = 0ms, Average = 0ms</code></pre></noscript></div>
+
+
+<h2>Настройка удаленного доступа к серверу</h2>
+
+<p>Сейчас, если мы попробуем подключится к SQL Server&#8217;у через Management Studio
+хоста, то мы не сможем. Надо настроить удаленный доступ к серверу.</p>
+
+<p>Для этого запускаем Management Studio на гостевой оси, далее заходим в свойства
+сервера. Тут надо сделать две вещи:</p>
+
+<ul>
+<li>На вкладке <strong>Security</strong> выставляем <strong>Server authentication</strong> в <em>SQL Server and Windows authentication mode</em>.</li>
+<li>На вкладке <strong>Connections</strong> выбираем пункт <em>Allow remote connections to this server</em>.</li>
+</ul>
+
+
+<p>Теперь идите в <em>Start → All Programs → Microsoft SQL Server 2008 → Configuration Tools → SQL Server Configuration Manager</em>.
+Там выбирайте <em>SQL Server Network Configuration → Protocols for MSSQLSERVER</em>.
+Щелкайте дважды по <em>TCP/IP</em> и выбирайте следующие опции:</p>
+
+<p><img src="http://s3.amazonaws.com/blackblog/pictures/2/original/tcp-ip-properties.png" title="Настройки TCP IP" ></p>
+
+<p>В поле IP Address укажите адрес хоста.</p>
+
+<p>Все, теперь вы можете удаленно подключаться к Sql Server&#8217;у как через Management
+Studio, так и с помощью других способов.)</p>
+
+<p><strong>UPD</strong>. Склонировать витуальный диск можно командой <strong>VBoxManage clonehd</strong>.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">George Bragin (blackfoks)</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-01-23T16:25:00+06:00" pubdate data-updated="true">Jan 23<span>rd</span>, 2011</time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://BlackFoks.github.com/blog/2011/01/23/kak-nastroit-sql-server-2008-na-virtual-box-s-dostupom-po-seti/" data-via="" data-counturl="http://BlackFoks.github.com/blog/2011/01/23/kak-nastroit-sql-server-2008-na-virtual-box-s-dostupom-po-seti/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+      
+        <a class="basic-alignment right" href="/blog/2011/08/25/kak-udalit-vse-ustanovlennye-gemy/" title="Next Post: Как удалить все установленные гемы">Как удалить все установленные гемы &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/03/28/kak-udalit-vse-merged-vetki/">Как удалить все merged ветки</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/02/12/ne-ispolzuite-time-ago-in-words/">Не используйте #time_ago_in_words</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/01/17/nastroika-capistrano-vmeste-s-rvm-bundler-i-fusion-passanger-pod-aws/">Настройка Capistrano вместе с RVM, Bundler и Fusion Passanger под AWS</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/01/16/nastraivaem-postgresql-v-ubuntu-i-mac-os-x-dlia-ror/">Настраиваем PostgreSQL в Ubuntu и Mac OS X для RoR</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/01/14/zapusk-phusion-passenger-standalone/">Запуск Phusion Passenger (Standalone)</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2012 - George Bragin (blackfoks) -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

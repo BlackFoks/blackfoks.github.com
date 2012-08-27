@@ -1,0 +1,364 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Настраиваем PostgreSQL в Ubuntu и Mac OS X для RoR - blackfoks</title>
+  <meta name="author" content="George Bragin (blackfoks)">
+
+  
+  <meta name="description" content="Начал экспериментировать с AWS и для блога решил выбрать PostgreSQL. В этом
+посте я опишу, как настроить эту БД в ubuntu на aws и на маке. Установка &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://BlackFoks.github.com/blog/2012/01/16/nastraivaem-postgresql-v-ubuntu-i-mac-os-x-dlia-ror/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="blackfoks" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">blackfoks</a></h1>
+  
+    <h2>notes of developer</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:BlackFoks.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Настраиваем PostgreSQL в Ubuntu и Mac OS X для RoR</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-01-16T11:46:00+07:00" pubdate data-updated="true">Jan 16<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Начал экспериментировать с AWS и для блога решил выбрать PostgreSQL. В этом
+посте я опишу, как настроить эту БД в ubuntu на aws и на маке.</p>
+
+<h2>Установка и настройка в Ubuntu 10.04</h2>
+
+<p>Мы будем ставить последнюю на дату написания поста версию 9.1.2. Так как для
+10.04 в стандартных репах этой версии нету, то надо подключить ppa.</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">$ </span>sudo add-apt-repository ppa:pitti/postgresql
+</span><span class='line'><span class="nv">$ </span>sudo apt-get update
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Теперь можно начать установку postgresql. Также установим библиотеку libpq-dev,
+которая требуется для гема <code>pg</code>.</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">$ </span>sudo apt-get install postgresql-9.1 libpq-dev
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>После установки давайте перезапустим сервер с поддержкой юникода:</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">$ </span>sudo -u postgres pg_dropcluster --stop 9.1 main
+</span><span class='line'><span class="nv">$ </span>sudo -u postgres pg_createcluster --start -e UTF-8 9.1 main
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>По умолчанию при установке был создан новый пользователь postgres, давайте
+зайдем в оболочку postgresql под его именем:</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">$ </span>sudo -u postgres psql postgres
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Далее давайте зададим пароль этому пользователю:</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">postgres</span><span class="o">=</span><span class="c"># \password postgres</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Пароль не будет отображаться при вводе, вас попросят ввести пароль два раза.
+Теперь вы можете указывать этого пользователя и его пароль в <code>database.yaml</code>.</p>
+
+<h2>Установка и настройка в Mac OS X 10.7.2</h2>
+
+<p>Установку в mac os будет производить с использованием Homebrew.</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">$ </span>brew update
+</span><span class='line'><span class="nv">$ </span>brew install postgresql
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>После чего, следуя инструкциям, инициализируем БД и добавим postgresql в
+автозагрузку.</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">$ </span>initdb /usr/local/var/postgres
+</span><span class='line'><span class="nv">$ </span>mkdir -p ~/Library/LaunchAgents
+</span><span class='line'><span class="nv">$ </span>cp /usr/local/Cellar/postgresql/9.1.2/org.postgresql.postgres.plist ~/Library/LaunchAgents/
+</span><span class='line'><span class="nv">$ </span>launchctl load -w ~/Library/LaunchAgents/org.postgresql.postgres.plist
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Формула Homebrew не создает пользователя, аналогичного пользователю postgres в
+ubuntu. По умолчанию, аутентификация в БД происходит под тем же пользователем,
+под которым была выполнена команда <code>brew install</code>. Пароль же (по крайней мере
+в database.yaml) можно вообще не указывать.</p>
+
+<p>Все, теперь вы можете установить гем <code>pg</code> как обычно и указать нужные параметры
+в database.yaml.</p>
+
+<h2>Настройка pg и рельс</h2>
+
+<p>Добавьте гем <code>pg</code> в ваш Gemfile и выполните <code>bundle install</code> как обычно. Теперь
+в укажите в database.yml нужные параметры. Я использую такие:</p>
+
+<figure class='code'><figcaption><span>database.yml </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+</pre></td><td class='code'><pre><code class='yaml'><span class='line'><span class="l-Scalar-Plain">development</span><span class="p-Indicator">:</span>
+</span><span class='line'>  <span class="l-Scalar-Plain">adapter</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">postgresql</span>
+</span><span class='line'>  <span class="l-Scalar-Plain">encoding</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">unicode</span>
+</span><span class='line'>  <span class="l-Scalar-Plain">pool</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">5</span>
+</span><span class='line'>  <span class="l-Scalar-Plain">username</span><span class="p-Indicator">:</span> <span class="p-Indicator">{</span><span class="nv">username</span><span class="p-Indicator">}</span>
+</span><span class='line'>  <span class="l-Scalar-Plain">password</span><span class="p-Indicator">:</span>
+</span><span class='line'>  <span class="l-Scalar-Plain">host</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">localhost</span>
+</span><span class='line'>  <span class="l-Scalar-Plain">port</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">5432</span>
+</span><span class='line'>  <span class="l-Scalar-Plain">database</span><span class="p-Indicator">:</span> <span class="p-Indicator">{</span><span class="nv">project_name</span><span class="p-Indicator">}</span><span class="l-Scalar-Plain">_dev</span>
+</span><span class='line'>
+</span><span class='line'><span class="l-Scalar-Plain">production</span><span class="p-Indicator">:</span>
+</span><span class='line'>  <span class="l-Scalar-Plain">adapter</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">postgresql</span>
+</span><span class='line'>  <span class="l-Scalar-Plain">encoding</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">unicode</span>
+</span><span class='line'>  <span class="l-Scalar-Plain">pool</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">5</span>
+</span><span class='line'>  <span class="l-Scalar-Plain">username</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">postgres</span>
+</span><span class='line'>  <span class="l-Scalar-Plain">password</span><span class="p-Indicator">:</span> <span class="p-Indicator">{</span><span class="nv">password</span><span class="p-Indicator">}</span>
+</span><span class='line'>  <span class="l-Scalar-Plain">host</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">localhost</span>
+</span><span class='line'>  <span class="l-Scalar-Plain">port</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">5432</span>
+</span><span class='line'>  <span class="l-Scalar-Plain">min_messages</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">warning</span>
+</span><span class='line'>  <span class="l-Scalar-Plain">database</span><span class="p-Indicator">:</span> <span class="p-Indicator">{</span><span class="nv">project_name</span><span class="p-Indicator">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Возможно, что эти параметры не совсем оптимальны, т.ч. будьте осторожны :)</p>
+
+<h2>Ссылки</h2>
+
+<p>Пост написан на основе этих материалов:</p>
+
+<ul>
+<li><a href="http://lug.nsk.ru/lugnskru/2010/10/ustanovka-postgresql-9-pgadmin-iii-v-ubuntu-10-04.html">Установка Postgresql 9, pgAdmin III в Ubuntu 10.04</a></li>
+<li><a href="http://www.dctrwatson.com/2010/09/installing-postgresql-9-0-on-ubuntu-10-04/">Installing PostgreSQL 9.0 on Ubuntu 10.04</a></li>
+<li><a href="http://russbrooks.com/2010/11/25/install-postgresql-9-on-os-x">Install PostgreSQL 9 on OS X</a></li>
+</ul>
+
+
+<p>Также привожу ссылку на указанный в посте ppa:</p>
+
+<ul>
+<li><a href="https://launchpad.net/~pitti/+archive/postgresql">PostgreSQL backports for stable Ubuntu releases</a></li>
+</ul>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">George Bragin (blackfoks)</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-01-16T11:46:00+07:00" pubdate data-updated="true">Jan 16<span>th</span>, 2012</time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://BlackFoks.github.com/blog/2012/01/16/nastraivaem-postgresql-v-ubuntu-i-mac-os-x-dlia-ror/" data-via="" data-counturl="http://BlackFoks.github.com/blog/2012/01/16/nastraivaem-postgresql-v-ubuntu-i-mac-os-x-dlia-ror/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2012/01/14/zapusk-phusion-passenger-standalone/" title="Previous Post: Запуск Phusion Passenger (Standalone)">&laquo; Запуск Phusion Passenger (Standalone)</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2012/01/17/nastroika-capistrano-vmeste-s-rvm-bundler-i-fusion-passanger-pod-aws/" title="Next Post: Настройка Capistrano вместе с RVM, Bundler и Fusion Passanger под AWS">Настройка Capistrano вместе с RVM, Bundler и Fusion Passanger под AWS &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/03/28/kak-udalit-vse-merged-vetki/">Как удалить все merged ветки</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/02/12/ne-ispolzuite-time-ago-in-words/">Не используйте #time_ago_in_words</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/01/17/nastroika-capistrano-vmeste-s-rvm-bundler-i-fusion-passanger-pod-aws/">Настройка Capistrano вместе с RVM, Bundler и Fusion Passanger под AWS</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/01/16/nastraivaem-postgresql-v-ubuntu-i-mac-os-x-dlia-ror/">Настраиваем PostgreSQL в Ubuntu и Mac OS X для RoR</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/01/14/zapusk-phusion-passenger-standalone/">Запуск Phusion Passenger (Standalone)</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2012 - George Bragin (blackfoks) -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

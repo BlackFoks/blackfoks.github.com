@@ -1,0 +1,353 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Настройка Capistrano вместе с RVM, Bundler и Fusion Passanger под AWS - blackfoks</title>
+  <meta name="author" content="George Bragin (blackfoks)">
+
+  
+  <meta name="description" content="Для начала установим Capistrano: Gemfile 1
+gem &#39;capistrano&#39; 1
+$ bundle install Теперь инициализируйте Capistrano в рабочей папке проекта: 1
+2 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://BlackFoks.github.com/blog/2012/01/17/nastroika-capistrano-vmeste-s-rvm-bundler-i-fusion-passanger-pod-aws/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="blackfoks" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">blackfoks</a></h1>
+  
+    <h2>notes of developer</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:BlackFoks.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Настройка Capistrano вместе с RVM, Bundler и Fusion Passanger под AWS</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-01-17T17:03:00+07:00" pubdate data-updated="true">Jan 17<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Для начала установим Capistrano:</p>
+
+<figure class='code'><figcaption><span>Gemfile  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">gem</span> <span class="s1">&#39;capistrano&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">$ </span>bundle install
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Теперь инициализируйте Capistrano в рабочей папке проекта:</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">$ </span><span class="nb">cd </span>my_project
+</span><span class='line'><span class="nv">$ </span>capify .
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Сначала я думал поэтапно все расписать, но потом решил, что это излишне и гораздо
+проще, удобней и понятней будет привести конечный код моего Capfile с моими
+комментариями на русском.</p>
+
+<div><script src='https://gist.github.com/3487103.js?file='></script>
+<noscript><pre><code># ---&gt; RVM details
+# добавляем в PATH путь до папки lib rvm
+$:.unshift(File.expand_path('./lib', ENV['rvm_path']))
+# загружаем плагин для поддержки rvm
+require &quot;rvm/capistrano&quot;
+# указываем какую версию руби и какой гемсет использовать
+set :rvm_ruby_string, '1.9.3@blackblog'
+# говорим, что rvm установлена для одного пользователя
+# если же rvm установлена глобально, то укажите :system
+set :rvm_type, :user
+
+# также грузим плагин для поддержки bundler'а
+require &quot;bundler/capistrano&quot;
+
+# ---&gt; Main details
+# указываем название приложения и роли
+set :application, &quot;blackblog&quot;
+role :web, &quot;newblog.blackfoks.com&quot;
+role :app, &quot;newblog.blackfoks.com&quot;
+role :db,  &quot;newblog.blackfoks.com&quot;, :primary =&gt; true
+
+# ---&gt; Server details
+# советуют указать для того, чтобы git мог запросить пароль
+default_run_options[:pty] = true
+# форвардим наши ssh-ключи с локальной машины в инстанс
+ssh_options[:forward_agent] = true
+# указывам путь, куда проводить deploy
+set :deploy_to, &quot;/var/www/my_project&quot;
+# если это не указать, то при каждом деплое вся репа будет перекачиваться заново
+set :deploy_via, :remote_cache
+# указываем имя пользователя на сервере
+set :user, &quot;ubuntu&quot;
+# указываем путь к ключу, с помощью которого мы заходим на инстанс через ssh
+ssh_options[:keys] = [File.join(ENV[&quot;HOME&quot;], &quot;.ec2&quot;, &quot;ec2-keypair&quot;)]
+# не использовать sudo
+set :use_sudo, false
+
+# ---&gt; Repo details
+# используем git
+set :scm, :git
+# указываем имя пользователя git
+set :scm_username, &quot;blackfoks&quot;
+# указываем адрес репы
+set :repository, &quot;git@bitbucket.org:blackfoks/blackblog.git&quot;
+# указываем ветку
+set :branch, &quot;master&quot;
+# включаем поддержку submodul'ей
+set :git_enable_submodules, 1
+
+# ---&gt; Runtime dependencies
+depend :remote, :gem, &quot;bundler&quot;, &quot;&gt;=1.0.21&quot;
+
+# говорим bundler'у устанавливать гемы не в папку с приложением, а глобально
+# но, т.к. мы используем rvm, bundler установит гемы в указанный выше гемсет
+# можно и без этого, каждый раз устанавливать все гемы долго и тратится много IOps'ов
+set :bundle_flags, &quot;&quot;
+set :bundle_dir, &quot;&quot;
+
+# ---&gt; Passenger
+# указываем environment
+set :rails_env,      &quot;production&quot;
+# указывает порт
+set :passenger_port, 80
+# какую команду мы будем использовать для запуска passenger'а
+set :passenger_cmd,  &quot;rvmsudo passenger&quot;
+
+# далее пойдут таски для запуска/остановки passenger'а
+# тут все более-менее понятно, только одно замечание:
+# мы добавляем `&amp;&amp; sleep 1` после запуска сервера для того, чтобы сервер
+# успел запуститься, иначе будет ошибка
+
+namespace :deploy do
+  task :start, :roles =&gt; :app, :except =&gt; { :no_release =&gt; true } do
+    # The sleep 1 is to give the server enough time to spawn.
+    # The session was closing before it spawned, so it never actually spawned
+    run &quot;cd #{current_path} &amp;&amp; #{passenger_cmd} start -p #{passenger_port} --user=ubuntu -e #{rails_env} -d &amp;&amp; sleep 1&quot;
+  end
+
+  task :stop, :roles =&gt; :app, :except =&gt; { :no_release =&gt; true } do
+    run &quot;cd #{current_path} &amp;&amp; #{passenger_cmd} stop -p #{passenger_port}&quot;
+  end
+
+  task :restart, :roles =&gt; :app, :except =&gt; { :no_release =&gt; true } do
+    run &lt;&lt;-CMD
+      if [[ -f #{current_path}/tmp/pids/passenger.#{passenger_port}.pid ]];
+      then
+        cd #{current_path} &amp;&amp; #{passenger_cmd} stop -p #{passenger_port};
+      fi
+    CMD
+
+    run &quot;cd #{current_path} &amp;&amp; #{passenger_cmd} start -p #{passenger_port} --user=ubuntu -e #{rails_env} -d &amp;&amp; sleep 1&quot;
+  end
+end</code></pre></noscript></div>
+
+
+<p>Ну вот вроде и все.</p>
+
+<h2>Ссылки</h2>
+
+<ul>
+<li><a href="http://kris.me.uk/2010/08/05/rails3-rvm-passenger-capistrano.html">Rails 3, RVM, Passenger and Capistrano</a></li>
+<li><a href="http://kris.me.uk/2011/10/28/rails-rvm-passenger-capistrano-git-apache.html">Rails 3.1 / Rack App Hosting with RVM, Passenger 3, Capistrano, Git and Apache</a></li>
+<li><a href="http://beginrescueend.com/integration/capistrano/">Using RVM rubies with Capistrano</a></li>
+<li><a href="http://craiccomputing.blogspot.com/2008/08/ec2-ssh-and-capistrano.html">Craic Computing Tech Tips</a></li>
+<li><a href="https://gist.github.com/959444">Capistrano recipe for passenger standalone</a></li>
+<li><a href="http://help.github.com/deploy-with-capistrano/">Deploy with Capistrano</a></li>
+<li><a href="http://pastebin.com/WnHJpbEq">Пример файла deploy.rb от пользователя с хабра</a></li>
+</ul>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">George Bragin (blackfoks)</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-01-17T17:03:00+07:00" pubdate data-updated="true">Jan 17<span>th</span>, 2012</time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://BlackFoks.github.com/blog/2012/01/17/nastroika-capistrano-vmeste-s-rvm-bundler-i-fusion-passanger-pod-aws/" data-via="" data-counturl="http://BlackFoks.github.com/blog/2012/01/17/nastroika-capistrano-vmeste-s-rvm-bundler-i-fusion-passanger-pod-aws/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2012/01/16/nastraivaem-postgresql-v-ubuntu-i-mac-os-x-dlia-ror/" title="Previous Post: Настраиваем PostgreSQL в Ubuntu и Mac OS X для RoR">&laquo; Настраиваем PostgreSQL в Ubuntu и Mac OS X для RoR</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2012/02/12/ne-ispolzuite-time-ago-in-words/" title="Next Post: Не используйте #time_ago_in_words">Не используйте #time_ago_in_words &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/03/28/kak-udalit-vse-merged-vetki/">Как удалить все merged ветки</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/02/12/ne-ispolzuite-time-ago-in-words/">Не используйте #time_ago_in_words</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/01/17/nastroika-capistrano-vmeste-s-rvm-bundler-i-fusion-passanger-pod-aws/">Настройка Capistrano вместе с RVM, Bundler и Fusion Passanger под AWS</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/01/16/nastraivaem-postgresql-v-ubuntu-i-mac-os-x-dlia-ror/">Настраиваем PostgreSQL в Ubuntu и Mac OS X для RoR</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/01/14/zapusk-phusion-passenger-standalone/">Запуск Phusion Passenger (Standalone)</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2012 - George Bragin (blackfoks) -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

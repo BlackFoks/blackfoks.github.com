@@ -5,13 +5,12 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Blog Archive - blackfoks</title>
+  <title>Запуск Phusion Passenger (Standalone) - blackfoks</title>
   <meta name="author" content="George Bragin (blackfoks)">
 
   
-  <meta name="description" content="Blog Archive 2012 Как удалить все merged ветки
-Mar 28 2012 Не используйте #time_ago_in_words
-Feb 12 2012 Настройка Capistrano вместе с RVM, Bundler &hellip;">
+  <meta name="description" content="Запуск passenger&#8217;а на 80 порту в продакшене: 1
+$ rvmsudo passenger start -p 80 --user=ubuntu -e production ">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -20,7 +19,7 @@ Feb 12 2012 Настройка Capistrano вместе с RVM, Bundler &hellip;"
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://BlackFoks.github.com/blog/archives/">
+  <link rel="canonical" href="http://BlackFoks.github.com/blog/2012/01/14/zapusk-phusion-passenger-standalone/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -65,104 +64,87 @@ Feb 12 2012 Настройка Capistrano вместе с RVM, Bundler &hellip;"
   <div id="main">
     <div id="content">
       <div>
-<article role="article">
+<article class="hentry" role="article">
   
   <header>
-    <h1 class="entry-title">Blog Archive</h1>
+    
+      <h1 class="entry-title">Запуск Phusion Passenger (Standalone)</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-01-14T16:59:00+07:00" pubdate data-updated="true">Jan 14<span>th</span>, 2012</time>
+        
+      </p>
     
   </header>
-  
-  <div id="blog-archives">
 
 
+<div class="entry-content"><p>Запуск passenger&#8217;а на 80 порту в продакшене:</p>
 
-  
-  <h2>2012</h2>
-
-<article>
-  
-<h1><a href="/blog/2012/03/28/kak-udalit-vse-merged-vetki/">Как удалить все merged ветки</a></h1>
-<time datetime="2012-03-28T18:58:00+07:00" pubdate><span class='month'>Mar</span> <span class='day'>28</span> <span class='year'>2012</span></time>
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">$ </span>rvmsudo passenger start -p 80 --user<span class="o">=</span>ubuntu -e production
+</span></code></pre></td></tr></table></div></figure>
 
 
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2012/02/12/ne-ispolzuite-time-ago-in-words/">Не используйте #time_ago_in_words</a></h1>
-<time datetime="2012-02-12T17:09:00+07:00" pubdate><span class='month'>Feb</span> <span class='day'>12</span> <span class='year'>2012</span></time>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2012/01/17/nastroika-capistrano-vmeste-s-rvm-bundler-i-fusion-passanger-pod-aws/">Настройка Capistrano вместе с RVM, Bundler и Fusion Passanger под AWS</a></h1>
-<time datetime="2012-01-17T17:03:00+07:00" pubdate><span class='month'>Jan</span> <span class='day'>17</span> <span class='year'>2012</span></time>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2012/01/16/nastraivaem-postgresql-v-ubuntu-i-mac-os-x-dlia-ror/">Настраиваем PostgreSQL в Ubuntu и Mac OS X для RoR</a></h1>
-<time datetime="2012-01-16T11:46:00+07:00" pubdate><span class='month'>Jan</span> <span class='day'>16</span> <span class='year'>2012</span></time>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2012/01/14/zapusk-phusion-passenger-standalone/">Запуск Phusion Passenger (Standalone)</a></h1>
-<time datetime="2012-01-14T16:59:00+07:00" pubdate><span class='month'>Jan</span> <span class='day'>14</span> <span class='year'>2012</span></time>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2012/01/14/aws-ubuntu-10-04-ruby-1-9-3-i-vse-vse-vse/">AWS, Ubuntu 10.04, Ruby 1.9.3 и все-все-все</a></h1>
-<time datetime="2012-01-14T16:56:00+07:00" pubdate><span class='month'>Jan</span> <span class='day'>14</span> <span class='year'>2012</span></time>
-
-
-</article>
-
-
-
-  
-  <h2>2011</h2>
-
-<article>
-  
-<h1><a href="/blog/2011/08/25/kak-udalit-vse-ustanovlennye-gemy/">Как удалить все установленные гемы</a></h1>
-<time datetime="2011-08-25T16:52:00+07:00" pubdate><span class='month'>Aug</span> <span class='day'>25</span> <span class='year'>2011</span></time>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2011/01/23/kak-nastroit-sql-server-2008-na-virtual-box-s-dostupom-po-seti/">Как настроить SQL Server 2008 на Virtual Box с доступом по сети</a></h1>
-<time datetime="2011-01-23T16:25:00+06:00" pubdate><span class='month'>Jan</span> <span class='day'>23</span> <span class='year'>2011</span></time>
-
-
-</article>
 
 </div>
 
+
+  <footer>
+    <p class="meta">
+      
   
+
+<span class="byline author vcard">Posted by <span class="fn">George Bragin (blackfoks)</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-01-14T16:59:00+07:00" pubdate data-updated="true">Jan 14<span>th</span>, 2012</time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://BlackFoks.github.com/blog/2012/01/14/zapusk-phusion-passenger-standalone/" data-via="" data-counturl="http://BlackFoks.github.com/blog/2012/01/14/zapusk-phusion-passenger-standalone/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2012/01/14/aws-ubuntu-10-04-ruby-1-9-3-i-vse-vse-vse/" title="Previous Post: AWS, Ubuntu 10.04, Ruby 1.9.3 и все-все-все">&laquo; AWS, Ubuntu 10.04, Ruby 1.9.3 и все-все-все</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2012/01/16/nastraivaem-postgresql-v-ubuntu-i-mac-os-x-dlia-ror/" title="Next Post: Настраиваем PostgreSQL в Ubuntu и Mac OS X для RoR">Настраиваем PostgreSQL в Ubuntu и Mac OS X для RoR &raquo;</a>
+      
+    </p>
+  </footer>
 </article>
 
 </div>

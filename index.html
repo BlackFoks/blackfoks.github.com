@@ -5,11 +5,12 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>My Octopress Blog</title>
-  <meta name="author" content="Your Name">
+  <title>blackfoks</title>
+  <meta name="author" content="George Bragin (blackfoks)">
 
   
-  <meta name="description" content=" Blog Archives Recent Posts ">
+  <meta name="description" content=" 1
+git branch --merged | grep -v &quot;\*&quot; | xargs -n 1 git branch -d ">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -24,7 +25,7 @@
   <script src="/javascripts/modernizr-2.0.js"></script>
   <script src="/javascripts/ender.js"></script>
   <script src="/javascripts/octopress.js" type="text/javascript"></script>
-  <link href="/atom.xml" rel="alternate" title="My Octopress Blog" type="application/atom+xml">
+  <link href="/atom.xml" rel="alternate" title="blackfoks" type="application/atom+xml">
   <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
 <link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
 <link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
@@ -35,9 +36,9 @@
 
 <body   >
   <header role="banner"><hgroup>
-  <h1><a href="/">My Octopress Blog</a></h1>
+  <h1><a href="/">blackfoks</a></h1>
   
-    <h2>A blogging framework for hackers.</h2>
+    <h2>notes of developer</h2>
   
 </hgroup>
 
@@ -65,6 +66,895 @@
       <div class="blog-index">
   
   
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/03/28/kak-udalit-vse-merged-vetki/">Как удалить все Merged ветки</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-03-28T18:58:00+07:00" pubdate data-updated="true">Mar 28<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content">
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>git branch --merged | grep -v <span class="s2">&quot;\*&quot;</span> | xargs -n 1 git branch -d
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/02/12/ne-ispolzuite-time-ago-in-words/">Не используйте #time_ago_in_words</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-02-12T17:09:00+07:00" pubdate data-updated="true">Feb 12<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>В мире RoR для того, чтобы отобразить время в виде &#8220;5 minutes ago&#8221; принято использовать метод <code>time_ago_in_words</code>. Все бы ничего, однако расчет времени на стороне сервера достаточно ресурсоемок, поэтому для подобных расчетов вполне можно использовать  ресурсы клиента.</p>
+
+<p>Для того, чтобы расчитать, сколько времени прошло между определенным моментом и текущим, рельсы предоставляют удобный helper-метод <code>time_ago_in_words</code>.</p>
+
+<h2>Что было</h2>
+
+<p>Имеем следующий код:</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">&lt;%=</span> <span class="n">times_ago_in_words</span><span class="p">(</span><span class="n">comment</span><span class="o">.</span><span class="n">created_at</span><span class="p">)</span> <span class="o">%&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>В целом неплохо, но есть возможности для улучшения. Сейчас этот код вызывает следующие проблемы:</p>
+
+<ol>
+<li>Серверу приходится расчитывать время для каждого запроса - впустую расходуется мощность серверного процессора. Следует попробовать перенести расчет времени на сторону клиента.</li>
+<li>Если расчет прошедшего времени ведется сервером, то нам становится сложным закешировать страницу, так как, допустим, после того, как пользователь добавил комментарий, на странице показывается надпись &#8220;5 секунд назад&#8221;. Если вы закешируется страницу, надпись все равно будет &#8220;5 секунд назад&#8221; даже если уже прошло 3 минуты (в зависимости от настроек кеширования).</li>
+</ol>
+
+
+<h2>Рефакторим</h2>
+
+<p>Очевидно, что для решения этой проблемы надо использовать JavaScript. На стороне сервера нам надо будет отдавать время создания и обновления, вместо того чтобы расчитывать, сколько времени прошло. Затем, уже на стороне клиента, мы можем расчитать прошедшее время.</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;abbr</span> <span class="na">class=</span><span class="s">&quot;timeago&quot;</span> <span class="na">title=</span><span class="s">&quot;&lt;%= comment.created_at.getutc.iso8601 %&gt;&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>  <span class="err">&lt;</span>%= comment.created_at.to_s %&gt;
+</span><span class='line'><span class="nt">&lt;/abbr&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Следующее решение использует плагин для jQuery под названием <a href="http://timeago.yarp.com/">timeago</a>. Если хотите, можете использовать что-то другое.</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">$</span><span class="p">(</span><span class="s2">&quot;abbr.timeago&quot;</span><span class="p">).</span><span class="nx">timeago</span><span class="p">();</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Теперь вашему серверу не придется рассчитывать прошедшее время, а кеширование страниц станет проще.</p>
+
+<p>Это вольный перевод <a href="http://rails-bestpractices.com/posts/105-not-use-time_ago_in_words">вот этой best practice</a>.</p>
+
+<p>Вот ссылка по локализации плагина: <a href="https://gist.github.com/6251">https://gist.github.com/6251</a></p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/01/17/nastroika-capistrano-vmeste-s-rvm-bundler-i-fusion-passanger-pod-aws/">Настройка Capistrano вместе с RVM, Bundler и Fusion Passanger под AWS</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-01-17T17:03:00+07:00" pubdate data-updated="true">Jan 17<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Для начала установим Capistrano:</p>
+
+<figure class='code'><figcaption><span>Gemfile  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">gem</span> <span class="s1">&#39;capistrano&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">$ </span>bundle install
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Теперь инициализируйте Capistrano в рабочей папке проекта:</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">$ </span><span class="nb">cd </span>my_project
+</span><span class='line'><span class="nv">$ </span>capify .
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Сначала я думал поэтапно все расписать, но потом решил, что это излишне и гораздо
+проще, удобней и понятней будет привести конечный код моего Capfile с моими
+комментариями на русском.</p>
+
+<div><script src='https://gist.github.com/3487103.js?file='></script>
+<noscript><pre><code># ---&gt; RVM details
+# добавляем в PATH путь до папки lib rvm
+$:.unshift(File.expand_path('./lib', ENV['rvm_path']))
+# загружаем плагин для поддержки rvm
+require &quot;rvm/capistrano&quot;
+# указываем какую версию руби и какой гемсет использовать
+set :rvm_ruby_string, '1.9.3@blackblog'
+# говорим, что rvm установлена для одного пользователя
+# если же rvm установлена глобально, то укажите :system
+set :rvm_type, :user
+
+# также грузим плагин для поддержки bundler'а
+require &quot;bundler/capistrano&quot;
+
+# ---&gt; Main details
+# указываем название приложения и роли
+set :application, &quot;blackblog&quot;
+role :web, &quot;newblog.blackfoks.com&quot;
+role :app, &quot;newblog.blackfoks.com&quot;
+role :db,  &quot;newblog.blackfoks.com&quot;, :primary =&gt; true
+
+# ---&gt; Server details
+# советуют указать для того, чтобы git мог запросить пароль
+default_run_options[:pty] = true
+# форвардим наши ssh-ключи с локальной машины в инстанс
+ssh_options[:forward_agent] = true
+# указывам путь, куда проводить deploy
+set :deploy_to, &quot;/var/www/my_project&quot;
+# если это не указать, то при каждом деплое вся репа будет перекачиваться заново
+set :deploy_via, :remote_cache
+# указываем имя пользователя на сервере
+set :user, &quot;ubuntu&quot;
+# указываем путь к ключу, с помощью которого мы заходим на инстанс через ssh
+ssh_options[:keys] = [File.join(ENV[&quot;HOME&quot;], &quot;.ec2&quot;, &quot;ec2-keypair&quot;)]
+# не использовать sudo
+set :use_sudo, false
+
+# ---&gt; Repo details
+# используем git
+set :scm, :git
+# указываем имя пользователя git
+set :scm_username, &quot;blackfoks&quot;
+# указываем адрес репы
+set :repository, &quot;git@bitbucket.org:blackfoks/blackblog.git&quot;
+# указываем ветку
+set :branch, &quot;master&quot;
+# включаем поддержку submodul'ей
+set :git_enable_submodules, 1
+
+# ---&gt; Runtime dependencies
+depend :remote, :gem, &quot;bundler&quot;, &quot;&gt;=1.0.21&quot;
+
+# говорим bundler'у устанавливать гемы не в папку с приложением, а глобально
+# но, т.к. мы используем rvm, bundler установит гемы в указанный выше гемсет
+# можно и без этого, каждый раз устанавливать все гемы долго и тратится много IOps'ов
+set :bundle_flags, &quot;&quot;
+set :bundle_dir, &quot;&quot;
+
+# ---&gt; Passenger
+# указываем environment
+set :rails_env,      &quot;production&quot;
+# указывает порт
+set :passenger_port, 80
+# какую команду мы будем использовать для запуска passenger'а
+set :passenger_cmd,  &quot;rvmsudo passenger&quot;
+
+# далее пойдут таски для запуска/остановки passenger'а
+# тут все более-менее понятно, только одно замечание:
+# мы добавляем `&amp;&amp; sleep 1` после запуска сервера для того, чтобы сервер
+# успел запуститься, иначе будет ошибка
+
+namespace :deploy do
+  task :start, :roles =&gt; :app, :except =&gt; { :no_release =&gt; true } do
+    # The sleep 1 is to give the server enough time to spawn.
+    # The session was closing before it spawned, so it never actually spawned
+    run &quot;cd #{current_path} &amp;&amp; #{passenger_cmd} start -p #{passenger_port} --user=ubuntu -e #{rails_env} -d &amp;&amp; sleep 1&quot;
+  end
+
+  task :stop, :roles =&gt; :app, :except =&gt; { :no_release =&gt; true } do
+    run &quot;cd #{current_path} &amp;&amp; #{passenger_cmd} stop -p #{passenger_port}&quot;
+  end
+
+  task :restart, :roles =&gt; :app, :except =&gt; { :no_release =&gt; true } do
+    run &lt;&lt;-CMD
+      if [[ -f #{current_path}/tmp/pids/passenger.#{passenger_port}.pid ]];
+      then
+        cd #{current_path} &amp;&amp; #{passenger_cmd} stop -p #{passenger_port};
+      fi
+    CMD
+
+    run &quot;cd #{current_path} &amp;&amp; #{passenger_cmd} start -p #{passenger_port} --user=ubuntu -e #{rails_env} -d &amp;&amp; sleep 1&quot;
+  end
+end</code></pre></noscript></div>
+
+
+<p>Ну вот вроде и все.</p>
+
+<h2>Ссылки</h2>
+
+<ul>
+<li><a href="http://kris.me.uk/2010/08/05/rails3-rvm-passenger-capistrano.html">Rails 3, RVM, Passenger and Capistrano</a></li>
+<li><a href="http://kris.me.uk/2011/10/28/rails-rvm-passenger-capistrano-git-apache.html">Rails 3.1 / Rack App Hosting with RVM, Passenger 3, Capistrano, Git and Apache</a></li>
+<li><a href="http://beginrescueend.com/integration/capistrano/">Using RVM rubies with Capistrano</a></li>
+<li><a href="http://craiccomputing.blogspot.com/2008/08/ec2-ssh-and-capistrano.html">Craic Computing Tech Tips</a></li>
+<li><a href="https://gist.github.com/959444">Capistrano recipe for passenger standalone</a></li>
+<li><a href="http://help.github.com/deploy-with-capistrano/">Deploy with Capistrano</a></li>
+<li><a href="http://pastebin.com/WnHJpbEq">Пример файла deploy.rb от пользователя с хабра</a></li>
+</ul>
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/01/16/nastraivaem-postgresql-v-ubuntu-i-mac-os-x-dlia-ror/">Настраиваем PostgreSQL в Ubuntu и Mac OS X для RoR</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-01-16T11:46:00+07:00" pubdate data-updated="true">Jan 16<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Начал экспериментировать с AWS и для блога решил выбрать PostgreSQL. В этом
+посте я опишу, как настроить эту БД в ubuntu на aws и на маке.</p>
+
+<h2>Установка и настройка в Ubuntu 10.04</h2>
+
+<p>Мы будем ставить последнюю на дату написания поста версию 9.1.2. Так как для
+10.04 в стандартных репах этой версии нету, то надо подключить ppa.</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">$ </span>sudo add-apt-repository ppa:pitti/postgresql
+</span><span class='line'><span class="nv">$ </span>sudo apt-get update
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Теперь можно начать установку postgresql. Также установим библиотеку libpq-dev,
+которая требуется для гема <code>pg</code>.</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">$ </span>sudo apt-get install postgresql-9.1 libpq-dev
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>После установки давайте перезапустим сервер с поддержкой юникода:</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">$ </span>sudo -u postgres pg_dropcluster --stop 9.1 main
+</span><span class='line'><span class="nv">$ </span>sudo -u postgres pg_createcluster --start -e UTF-8 9.1 main
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>По умолчанию при установке был создан новый пользователь postgres, давайте
+зайдем в оболочку postgresql под его именем:</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">$ </span>sudo -u postgres psql postgres
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Далее давайте зададим пароль этому пользователю:</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">postgres</span><span class="o">=</span><span class="c"># \password postgres</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Пароль не будет отображаться при вводе, вас попросят ввести пароль два раза.
+Теперь вы можете указывать этого пользователя и его пароль в <code>database.yaml</code>.</p>
+
+<h2>Установка и настройка в Mac OS X 10.7.2</h2>
+
+<p>Установку в mac os будет производить с использованием Homebrew.</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">$ </span>brew update
+</span><span class='line'><span class="nv">$ </span>brew install postgresql
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>После чего, следуя инструкциям, инициализируем БД и добавим postgresql в
+автозагрузку.</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">$ </span>initdb /usr/local/var/postgres
+</span><span class='line'><span class="nv">$ </span>mkdir -p ~/Library/LaunchAgents
+</span><span class='line'><span class="nv">$ </span>cp /usr/local/Cellar/postgresql/9.1.2/org.postgresql.postgres.plist ~/Library/LaunchAgents/
+</span><span class='line'><span class="nv">$ </span>launchctl load -w ~/Library/LaunchAgents/org.postgresql.postgres.plist
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Формула Homebrew не создает пользователя, аналогичного пользователю postgres в
+ubuntu. По умолчанию, аутентификация в БД происходит под тем же пользователем,
+под которым была выполнена команда <code>brew install</code>. Пароль же (по крайней мере
+в database.yaml) можно вообще не указывать.</p>
+
+<p>Все, теперь вы можете установить гем <code>pg</code> как обычно и указать нужные параметры
+в database.yaml.</p>
+
+<h2>Настройка pg и рельс</h2>
+
+<p>Добавьте гем <code>pg</code> в ваш Gemfile и выполните <code>bundle install</code> как обычно. Теперь
+в укажите в database.yml нужные параметры. Я использую такие:</p>
+
+<figure class='code'><figcaption><span>database.yml </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+</pre></td><td class='code'><pre><code class='yaml'><span class='line'><span class="l-Scalar-Plain">development</span><span class="p-Indicator">:</span>
+</span><span class='line'>  <span class="l-Scalar-Plain">adapter</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">postgresql</span>
+</span><span class='line'>  <span class="l-Scalar-Plain">encoding</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">unicode</span>
+</span><span class='line'>  <span class="l-Scalar-Plain">pool</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">5</span>
+</span><span class='line'>  <span class="l-Scalar-Plain">username</span><span class="p-Indicator">:</span> <span class="p-Indicator">{</span><span class="nv">username</span><span class="p-Indicator">}</span>
+</span><span class='line'>  <span class="l-Scalar-Plain">password</span><span class="p-Indicator">:</span>
+</span><span class='line'>  <span class="l-Scalar-Plain">host</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">localhost</span>
+</span><span class='line'>  <span class="l-Scalar-Plain">port</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">5432</span>
+</span><span class='line'>  <span class="l-Scalar-Plain">database</span><span class="p-Indicator">:</span> <span class="p-Indicator">{</span><span class="nv">project_name</span><span class="p-Indicator">}</span><span class="l-Scalar-Plain">_dev</span>
+</span><span class='line'>
+</span><span class='line'><span class="l-Scalar-Plain">production</span><span class="p-Indicator">:</span>
+</span><span class='line'>  <span class="l-Scalar-Plain">adapter</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">postgresql</span>
+</span><span class='line'>  <span class="l-Scalar-Plain">encoding</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">unicode</span>
+</span><span class='line'>  <span class="l-Scalar-Plain">pool</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">5</span>
+</span><span class='line'>  <span class="l-Scalar-Plain">username</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">postgres</span>
+</span><span class='line'>  <span class="l-Scalar-Plain">password</span><span class="p-Indicator">:</span> <span class="p-Indicator">{</span><span class="nv">password</span><span class="p-Indicator">}</span>
+</span><span class='line'>  <span class="l-Scalar-Plain">host</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">localhost</span>
+</span><span class='line'>  <span class="l-Scalar-Plain">port</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">5432</span>
+</span><span class='line'>  <span class="l-Scalar-Plain">min_messages</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">warning</span>
+</span><span class='line'>  <span class="l-Scalar-Plain">database</span><span class="p-Indicator">:</span> <span class="p-Indicator">{</span><span class="nv">project_name</span><span class="p-Indicator">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Возможно, что эти параметры не совсем оптимальны, т.ч. будьте осторожны :)</p>
+
+<h2>Ссылки</h2>
+
+<p>Пост написан на основе этих материалов:</p>
+
+<ul>
+<li><a href="http://lug.nsk.ru/lugnskru/2010/10/ustanovka-postgresql-9-pgadmin-iii-v-ubuntu-10-04.html">Установка Postgresql 9, pgAdmin III в Ubuntu 10.04</a></li>
+<li><a href="http://www.dctrwatson.com/2010/09/installing-postgresql-9-0-on-ubuntu-10-04/">Installing PostgreSQL 9.0 on Ubuntu 10.04</a></li>
+<li><a href="http://russbrooks.com/2010/11/25/install-postgresql-9-on-os-x">Install PostgreSQL 9 on OS X</a></li>
+</ul>
+
+
+<p>Также привожу ссылку на указанный в посте ppa:</p>
+
+<ul>
+<li><a href="https://launchpad.net/~pitti/+archive/postgresql">PostgreSQL backports for stable Ubuntu releases</a></li>
+</ul>
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/01/14/zapusk-phusion-passenger-standalone/">Запуск Phusion Passenger (Standalone)</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-01-14T16:59:00+07:00" pubdate data-updated="true">Jan 14<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Запуск passenger&#8217;а на 80 порту в продакшене:</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">$ </span>rvmsudo passenger start -p 80 --user<span class="o">=</span>ubuntu -e production
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/01/14/aws-ubuntu-10-04-ruby-1-9-3-i-vse-vse-vse/">AWS, Ubuntu 10.04, Ruby 1.9.3 и все-все-все</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-01-14T16:56:00+07:00" pubdate data-updated="true">Jan 14<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Смотрим <a href="http://uec-images.ubuntu.com/lucid/current/">список AMI для 10.04</a>,
+выбираем, какой больше нравится. Я выбрал 32-битку ebs в регионе us-east-1 (под
+халявный микро-инстанс). Там же указана команда, которой можно создать инстанс с
+соответствующим AMI. Для выбранного мной инстанса команда такая:</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">$ </span>ec2-run-instances ami-f5d1069c --instance-type t1.micro --region us-east-1 --key <span class="k">${</span><span class="nv">EC2_KEYPAIR_US_EAST_1</span><span class="k">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Не забудьте указать используемый вами ключ.</p>
+
+<p>Подождите, пока инстанс создастся (посмотреть можно в AWS Management Console),
+после чего коннектимся к только что созданному инстансу:</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">$ </span>ssh -i <span class="o">{</span>ваш-ключ<span class="o">}</span> ubuntu@ec2-xx-xx-xx-xx.compute-1.amazonaws.com
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Теперь приступаем к следующему этапу.</p>
+
+<h2>Установка RVM и Ruby</h2>
+
+<p>Для начала давайте убедимся, что у нас вообще нету руби:</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">$ </span>which ruby
+</span><span class='line'><span class="err">$</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Точно, нету. Ставим curl, git и обычную ruby (требуется для уставки MRI через rvm):</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">$ </span>sudo apt-get install curl git-core ruby
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Теперь ставим rvm (<a href="http://rvm.beginrescueend.com/rvm/install/">подробные инструкции тут</a>):</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">$ </span>bash -s stable &lt; &lt;<span class="o">(</span>curl -s https://raw.github.com/wayneeseguin/rvm/master/binscripts/rvm-installer <span class="o">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>После установки гляньте заметки об rvm:</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">$ </span>rvm notes
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>И обязательно</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">$ </span>rvm requirements
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>для того, чтобы посмотреть, что нужно установить для используемой ОС. В моем
+случае мне предложили это:</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">$ </span>sudo apt-get install build-essential openssl libreadline6 libreadline6-dev curl git-core zlib1g zlib1g-dev libssl-dev libyaml-dev libsqlite3-0 libsqlite3-dev sqlite3 libxml2-dev libxslt-dev autoconf libc6-dev ncurses-dev automake libtool bison subversion
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Что я и сделал. Теперь надо добавить запись об rvm в .bash-profile:</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">$ </span><span class="nb">echo</span> <span class="s1">&#39;[[ -s &quot;$HOME/.rvm/scripts/rvm&quot; ]] &amp;&amp; . &quot;$HOME/.rvm/scripts/rvm&quot; # Load RVM function&#39;</span> &gt;&gt; ~/.bash_profile
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>И перезагрузим профайл:</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">$ </span><span class="nb">source</span> .bash_profile
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Давайте проверим, все ли норм с rvm:</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">$ </span><span class="nb">type </span>rvm | head -1
+</span><span class='line'>rvm is a <span class="k">function</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Если все так, то все хорошо.</p>
+
+<p>Теперь можно посмотреть список известных версий руби и поставить нужную:</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">$ </span>rvm list known
+</span><span class='line'><span class="nv">$ </span>rvm install 1.9.3-p0
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>После чего делаем установленную версию руби версией по умолчанию:</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">$ </span>rvm --default 1.9.3-p0
+</span><span class='line'><span class="nv">$ </span>ruby -v
+</span><span class='line'>ruby 1.9.3p0 <span class="o">(</span>2011-10-30 revision 33570<span class="o">)</span> <span class="o">[</span>i686-linux<span class="o">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Все, квест закончен :) Можно приступить к установке рельсов и всего остального.)</p>
+
+<p><strong>UPD</strong>. Также не забудьте добавить execjs и therubyracer в production секцию Gemfile.</p>
+
+<figure class='code'><figcaption><span>Gemfile  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">gem</span> <span class="s1">&#39;execjs&#39;</span>
+</span><span class='line'><span class="n">gem</span> <span class="s1">&#39;therubyracer&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2011/08/25/kak-udalit-vse-ustanovlennye-gemy/">Как удалить все установленные гемы</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-08-25T16:52:00+07:00" pubdate data-updated="true">Aug 25<span>th</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Использую rvm и по ошибке установил кучу гемов не в тот gemset, следующей
+командой можно удалить все гемы из текущего gemset (rake останется):</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">$ </span>gem list --local | cut -d<span class="s2">&quot; &quot;</span> -f1 | xargs gem uninstall -aIx
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Эта команда делает следующее:</p>
+
+<ul>
+<li><strong><code>gem list --local</code></strong> – список всех установленный гемов</li>
+<li><strong><code>cut -d" " -f1</code></strong> – разбивает ответ на колонки используя пробел как
+разделитель (<code>-d" "</code>) и возвращает только первую колонку (<code>-f1</code>)</li>
+<li><strong><code>xargs gem uninstall -aIx</code></strong> – для каждой строки выполняет
+<code>gem uninstall -aIx</code> используя каждую строку как аргумент.</li>
+</ul>
+
+
+<p>Также следует описать опции gem:</p>
+
+<ul>
+<li><strong><code>a</code></strong> – удаляет все версии</li>
+<li><strong><code>I</code></strong> – игнорирует все зависимости при удалении</li>
+<li><strong><code>x</code></strong> – удаляет исполняетмые файлы не спрашивая</li>
+</ul>
+
+
+<p>P.S. Вот она – мощь unix-way.)</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2011/01/23/kak-nastroit-sql-server-2008-na-virtual-box-s-dostupom-po-seti/">Как настроить SQL Server 2008 на Virtual Box с доступом по сети</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-01-23T16:25:00+06:00" pubdate data-updated="true">Jan 23<span>rd</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Решил перенести все инстансы SQL Server&#8217;а на виртуалку, т.к. из-за них довольно
+сильно увеличивается время загрузки рабочего компа. В качестве ОС для виртуалки
+решил использовать XP, т.к. жрет мало места и оперативки. Поставил XP SP3, после
+чего установил SQL Server 2008 Developer. Вместе с ним еще установились .NET 3.5
+SP1 и обновление на Windows Installer. Во время установки сервака вылетела
+ошибка, что типа не смогли переписать файл, защищаемый виндой, что-то типа
+msxml6.dll или как-то так.</p>
+
+<p>Далее запускаю Management Studio, все работает отлично.</p>
+
+<h2>Настройка сети</h2>
+
+<p>Теперь надо настроить сеть между хостом (Win7) и гостевой осью. В настройках
+адаптеров сети гостевой операционки я выбрал <em>Сетевой мост</em> и в качестве
+физического адаптера ту сетевую карту, которая у меня подключена к домашней
+сети. Это позволит обращаться к базе с любого компа в домашней сети + иметь
+доступ в интернет. Вот скрин настроек:</p>
+
+<p><img src="http://s3.amazonaws.com/blackblog/pictures/1/original/guest-net-settings.png" title="Скрин настроек" ></p>
+
+<p>Когда вы выставите такие настройки в свойствах машины и запустите ее, то ХР
+после загрузки подключится в домашнюю сеть и получит адрес от DHCP роутера.
+Теперь, если попробовать пингануть хост из гостевой ОС, то все пройдет
+нормально:</p>
+
+<div><script src='https://gist.github.com/791365.js?file='></script>
+<noscript><pre><code>C:\Documents and Settings\Admin&gt;ping 192.168.1.3
+
+Обмен пакетами с 192.168.1.3 по 32 байт:
+
+Ответ от 192.168.1.3: число байт=32 время&lt;1мс TTL=128
+Ответ от 192.168.1.3: число байт=32 время&lt;1мс TTL=128
+Ответ от 192.168.1.3: число байт=32 время&lt;1мс TTL=128
+Ответ от 192.168.1.3: число байт=32 время&lt;1мс TTL=128
+
+Статистика Ping для 192.168.1.3:
+    Пакетов: отправлено = 4, получено = 4, потеряно = 0 (0% потерь),
+Приблизительное время приема-передачи в мс:
+    Минимальное = 0мсек, Максимальное = 0 мсек, Среднее = 0 мсек</code></pre></noscript></div>
+
+
+<p>Но вот с хоста мы не можем пингануть гостевую ОС, пакеты не доходят:</p>
+
+<div><script src='https://gist.github.com/791824.js?file='></script>
+<noscript><pre><code>PS C:\Users\BlackFoks&gt; ping 192.168.1.5
+
+Pinging 192.168.1.5 with 32 bytes of data:
+Request timed out.
+Request timed out.
+Request timed out.
+Request timed out.
+
+Ping statistics for 192.168.1.5:
+    Packets: Sent = 4, Received = 0, Lost = 4 (100% loss),</code></pre></noscript></div>
+
+
+<p>Думаем, в чем проблема и вспоминаем, что в ХР мы не отключили <strong>файервол</strong> и он
+блочит пакеты. В гостевой ОС идем в <em>Панель управления → Сетевые подключения</em>,
+там заходим в свойства сетевого адаптера и отключаем фаейрвол. Теперь еще раз
+пингуем гостевую ось с хоста и видим, что все хорошо работает:</p>
+
+<div><script src='https://gist.github.com/791825.js?file='></script>
+<noscript><pre><code>PS C:\Users\BlackFoks&gt; ping 192.168.1.5
+
+Pinging 192.168.1.5 with 32 bytes of data:
+Reply from 192.168.1.5: bytes=32 time&lt;1ms TTL=128
+Reply from 192.168.1.5: bytes=32 time&lt;1ms TTL=128
+Reply from 192.168.1.5: bytes=32 time&lt;1ms TTL=128
+Reply from 192.168.1.5: bytes=32 time&lt;1ms TTL=128
+
+Ping statistics for 192.168.1.5:
+    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 0ms, Maximum = 0ms, Average = 0ms</code></pre></noscript></div>
+
+
+<h2>Настройка удаленного доступа к серверу</h2>
+
+<p>Сейчас, если мы попробуем подключится к SQL Server&#8217;у через Management Studio
+хоста, то мы не сможем. Надо настроить удаленный доступ к серверу.</p>
+
+<p>Для этого запускаем Management Studio на гостевой оси, далее заходим в свойства
+сервера. Тут надо сделать две вещи:</p>
+
+<ul>
+<li>На вкладке <strong>Security</strong> выставляем <strong>Server authentication</strong> в <em>SQL Server and Windows authentication mode</em>.</li>
+<li>На вкладке <strong>Connections</strong> выбираем пункт <em>Allow remote connections to this server</em>.</li>
+</ul>
+
+
+<p>Теперь идите в <em>Start → All Programs → Microsoft SQL Server 2008 → Configuration Tools → SQL Server Configuration Manager</em>.
+Там выбирайте <em>SQL Server Network Configuration → Protocols for MSSQLSERVER</em>.
+Щелкайте дважды по <em>TCP/IP</em> и выбирайте следующие опции:</p>
+
+<p><img src="http://s3.amazonaws.com/blackblog/pictures/2/original/tcp-ip-properties.png" title="Настройки TCP IP" ></p>
+
+<p>В поле IP Address укажите адрес хоста.</p>
+
+<p>Все, теперь вы можете удаленно подключаться к Sql Server&#8217;у как через Management
+Studio, так и с помощью других способов.)</p>
+
+<p><strong>UPD</strong>. Склонировать витуальный диск можно командой <strong>VBoxManage clonehd</strong>.</p>
+</div>
+  
+  
+
+
+    </article>
+  
   <div class="pagination">
     
     <a href="/blog/archives">Blog Archives</a>
@@ -76,6 +966,26 @@
     <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/03/28/kak-udalit-vse-merged-vetki/">Как удалить все merged ветки</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/02/12/ne-ispolzuite-time-ago-in-words/">Не используйте #time_ago_in_words</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/01/17/nastroika-capistrano-vmeste-s-rvm-bundler-i-fusion-passanger-pod-aws/">Настройка Capistrano вместе с RVM, Bundler и Fusion Passanger под AWS</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/01/16/nastraivaem-postgresql-v-ubuntu-i-mac-os-x-dlia-ror/">Настраиваем PostgreSQL в Ubuntu и Mac OS X для RoR</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/01/14/zapusk-phusion-passenger-standalone/">Запуск Phusion Passenger (Standalone)</a>
+      </li>
     
   </ul>
 </section>
@@ -91,7 +1001,7 @@
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2012 - Your Name -
+  Copyright &copy; 2012 - George Bragin (blackfoks) -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
 </p>
 

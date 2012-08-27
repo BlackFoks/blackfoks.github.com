@@ -1,11 +1,53 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>
     <url>
+        <loc>
+            http://BlackFoks.github.com/blog/2011/01/23/kak-nastroit-sql-server-2008-na-virtual-box-s-dostupom-po-seti/
+        </loc>
+        <lastmod>2012-08-27T16:51:27+07:00</lastmod>
+    </url>
+    <url>
+        <loc>http://BlackFoks.github.com/blog/2011/08/25/kak-udalit-vse-ustanovlennye-gemy/</loc>
+        <lastmod>2012-08-27T18:57:35+07:00</lastmod>
+    </url>
+    <url>
+        <loc>
+            http://BlackFoks.github.com/blog/2012/01/14/aws-ubuntu-10-04-ruby-1-9-3-i-vse-vse-vse/
+        </loc>
+        <lastmod>2012-08-27T18:51:57+07:00</lastmod>
+    </url>
+    <url>
+        <loc>
+            http://BlackFoks.github.com/blog/2012/01/14/zapusk-phusion-passenger-standalone/
+        </loc>
+        <lastmod>2012-08-27T18:48:18+07:00</lastmod>
+    </url>
+    <url>
+        <loc>
+            http://BlackFoks.github.com/blog/2012/01/16/nastraivaem-postgresql-v-ubuntu-i-mac-os-x-dlia-ror/
+        </loc>
+        <lastmod>2012-08-27T18:49:00+07:00</lastmod>
+    </url>
+    <url>
+        <loc>
+            http://BlackFoks.github.com/blog/2012/01/17/nastroika-capistrano-vmeste-s-rvm-bundler-i-fusion-passanger-pod-aws/
+        </loc>
+        <lastmod>2012-08-27T17:22:23+07:00</lastmod>
+    </url>
+    <url>
+        <loc>http://BlackFoks.github.com/blog/2012/02/12/ne-ispolzuite-time-ago-in-words/</loc>
+        <lastmod>2012-08-27T17:18:28+07:00</lastmod>
+    </url>
+    <url>
+        <loc>http://BlackFoks.github.com/blog/2012/03/28/kak-udalit-vse-merged-vetki/</loc>
+        <lastmod>2012-08-27T19:01:13+07:00</lastmod>
+    </url>
+    <url>
         <loc>http://BlackFoks.github.com/blog/archives/</loc>
-        <lastmod>2012-08-27T15:53:15+07:00</lastmod>
+        <lastmod>2012-08-27T19:01:13+07:00</lastmod>
     </url>
     <url>
         <loc>http://BlackFoks.github.com/</loc>
-        <lastmod>2012-08-27T15:53:15+07:00</lastmod>
+        <lastmod>2012-08-27T19:01:13+07:00</lastmod>
     </url>
 </urlset>
