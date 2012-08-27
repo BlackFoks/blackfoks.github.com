@@ -9,8 +9,9 @@
   <meta name="author" content="George Bragin (blackfoks)">
 
   
-  <meta name="description" content=" 1
-git branch --merged | grep -v &quot;\*&quot; | xargs -n 1 git branch -d ">
+  <meta name="description" content="In order to obtain current scope under the cursor in Sublime Test 2 just run
+this command in the sublime console: 1
+print (view.syntax_name(view.sel &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -77,6 +78,50 @@ git branch --merged | grep -v &quot;\*&quot; | xargs -n 1 git branch -d ">
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/08/28/obtain-current-scope-in-sublime-text-2/">Obtain Current Scope in Sublime Text 2</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-08-28T00:56:00+07:00" pubdate data-updated="true">Aug 28<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>In order to obtain current scope under the cursor in Sublime Test 2 just run
+this command in the sublime console:</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>print <span class="o">(</span>view.syntax_name<span class="o">(</span>view.sel<span class="o">()[</span>0<span class="o">]</span>.b<span class="o">))</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -980,6 +1025,10 @@ Studio, так и с помощью других способов.)</p>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2012/08/28/obtain-current-scope-in-sublime-text-2/">Obtain current scope in Sublime Text 2</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2012/03/28/kak-udalit-vse-merged-vetki/">Как удалить все merged ветки</a>
       </li>
     
@@ -993,10 +1042,6 @@ Studio, так и с помощью других способов.)</p>
     
       <li class="post">
         <a href="/blog/2012/01/16/nastraivaem-postgresql-v-ubuntu-i-mac-os-x-dlia-ror/">Настраиваем PostgreSQL в Ubuntu и Mac OS X для RoR</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/01/14/zapusk-phusion-passenger-standalone/">Запуск Phusion Passenger (Standalone)</a>
       </li>
     
   </ul>

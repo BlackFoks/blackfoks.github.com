@@ -5,12 +5,13 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Как удалить все merged ветки - blackfoks</title>
+  <title>Obtain current scope in Sublime Text 2 - blackfoks</title>
   <meta name="author" content="George Bragin (blackfoks)">
 
   
-  <meta name="description" content=" 1
-git branch --merged | grep -v &quot;\*&quot; | xargs -n 1 git branch -d ">
+  <meta name="description" content="In order to obtain current scope under the cursor in Sublime Test 2 just run
+this command in the sublime console: 1
+print (view.syntax_name(view.sel &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -19,7 +20,7 @@ git branch --merged | grep -v &quot;\*&quot; | xargs -n 1 git branch -d ">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://BlackFoks.github.com/blog/2012/03/28/kak-udalit-vse-merged-vetki/">
+  <link rel="canonical" href="http://BlackFoks.github.com/blog/2012/08/28/obtain-current-scope-in-sublime-text-2/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -80,7 +81,7 @@ git branch --merged | grep -v &quot;\*&quot; | xargs -n 1 git branch -d ">
   
   <header>
     
-      <h1 class="entry-title">Как удалить все Merged ветки</h1>
+      <h1 class="entry-title">Obtain Current Scope in Sublime Text 2</h1>
     
     
       <p class="meta">
@@ -96,17 +97,18 @@ git branch --merged | grep -v &quot;\*&quot; | xargs -n 1 git branch -d ">
   
 
 
-<time datetime="2012-03-28T18:58:00+07:00" pubdate data-updated="true">Mar 28<span>th</span>, 2012</time>
+<time datetime="2012-08-28T00:56:00+07:00" pubdate data-updated="true">Aug 28<span>th</span>, 2012</time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content">
+<div class="entry-content"><p>In order to obtain current scope under the cursor in Sublime Test 2 just run
+this command in the sublime console:</p>
 
 <figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='sh'><span class='line'>git branch --merged | grep -v <span class="s2">&quot;\*&quot;</span> | xargs -n 1 git branch -d
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>print <span class="o">(</span>view.syntax_name<span class="o">(</span>view.sel<span class="o">()[</span>0<span class="o">]</span>.b<span class="o">))</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
@@ -133,7 +135,7 @@ git branch --merged | grep -v &quot;\*&quot; | xargs -n 1 git branch -d ">
   
 
 
-<time datetime="2012-03-28T18:58:00+07:00" pubdate data-updated="true">Mar 28<span>th</span>, 2012</time>
+<time datetime="2012-08-28T00:56:00+07:00" pubdate data-updated="true">Aug 28<span>th</span>, 2012</time>
       
 
 
@@ -141,7 +143,7 @@ git branch --merged | grep -v &quot;\*&quot; | xargs -n 1 git branch -d ">
     
       <div class="sharing">
   
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://BlackFoks.github.com/blog/2012/03/28/kak-udalit-vse-merged-vetki/" data-via="" data-counturl="http://BlackFoks.github.com/blog/2012/03/28/kak-udalit-vse-merged-vetki/" >Tweet</a>
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://BlackFoks.github.com/blog/2012/08/28/obtain-current-scope-in-sublime-text-2/" data-via="" data-counturl="http://BlackFoks.github.com/blog/2012/08/28/obtain-current-scope-in-sublime-text-2/" >Tweet</a>
   
   
   
@@ -150,10 +152,8 @@ git branch --merged | grep -v &quot;\*&quot; | xargs -n 1 git branch -d ">
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/2012/02/12/ne-ispolzuite-time-ago-in-words/" title="Previous Post: Не используйте #time_ago_in_words">&laquo; Не используйте #time_ago_in_words</a>
+        <a class="basic-alignment left" href="/blog/2012/03/28/kak-udalit-vse-merged-vetki/" title="Previous Post: Как удалить все merged ветки">&laquo; Как удалить все merged ветки</a>
       
-      
-        <a class="basic-alignment right" href="/blog/2012/08/28/obtain-current-scope-in-sublime-text-2/" title="Next Post: Obtain current scope in Sublime Text 2">Obtain current scope in Sublime Text 2 &raquo;</a>
       
     </p>
   </footer>

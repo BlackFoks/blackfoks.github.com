@@ -4,7 +4,7 @@
   <title><![CDATA[blackfoks]]></title>
   <link href="http://BlackFoks.github.com/atom.xml" rel="self"/>
   <link href="http://BlackFoks.github.com/"/>
-  <updated>2012-08-27T23:26:18+07:00</updated>
+  <updated>2012-08-28T01:34:25+07:00</updated>
   <id>http://BlackFoks.github.com/</id>
   <author>
     <name><![CDATA[George Bragin (blackfoks)]]></name>
@@ -12,6 +12,23 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Obtain current scope in Sublime Text 2]]></title>
+    <link href="http://BlackFoks.github.com/blog/2012/08/28/obtain-current-scope-in-sublime-text-2/"/>
+    <updated>2012-08-28T00:56:00+07:00</updated>
+    <id>http://BlackFoks.github.com/blog/2012/08/28/obtain-current-scope-in-sublime-text-2</id>
+    <content type="html"><![CDATA[<p>In order to obtain current scope under the cursor in Sublime Test 2 just run
+this command in the sublime console:</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>print <span class="o">(</span>view.syntax_name<span class="o">(</span>view.sel<span class="o">()[</span>0<span class="o">]</span>.b<span class="o">))</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Как удалить все merged ветки]]></title>
